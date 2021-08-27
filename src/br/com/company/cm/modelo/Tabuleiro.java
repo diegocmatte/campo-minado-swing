@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 
 public class Tabuleiro implements CampoObservador{
 
-    private int qtdLinhas;
-    private int qtdColunas;
-    private int qtdMinas;
+    private final int qtdLinhas;
+    private final int qtdColunas;
+    private final int qtdMinas;
 
     private final List<Campo> campos = new ArrayList<>();
     private final List<Consumer<ResultadoEvento>> observadores = new ArrayList<>();
@@ -23,6 +23,10 @@ public class Tabuleiro implements CampoObservador{
         gerarCampos();
         associarVizinhos();
         sortearMinas();
+    }
+
+    public void paraCadaCampo(Consumer<Campo> funcao){
+        campos.forEach(funcao);
     }
 
     public void registrarObservador(Consumer<ResultadoEvento> observador){
@@ -44,6 +48,7 @@ public class Tabuleiro implements CampoObservador{
     private void mostrarMinas(){
         campos.stream()
                 .filter(c -> c.isMinado())
+                .filter(c -> !c.isMarcado())
                 .forEach(c -> c.setAberto(true));
     }
 
@@ -90,6 +95,14 @@ public class Tabuleiro implements CampoObservador{
     public void reiniciarJogo(){
         campos.stream().forEach(c -> c.reiniciarJogo());
         sortearMinas();
+    }
+
+    public int getQtdLinhas() {
+        return qtdLinhas;
+    }
+
+    public int getQtdColunas() {
+        return qtdColunas;
     }
 
     @Override
